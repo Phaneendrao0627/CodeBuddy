@@ -1,4 +1,5 @@
 import requests
+from prompts import get_mode_instructions
 
 
 OLLAMA_URL = "http://localhost:11434/api/generate"
@@ -9,63 +10,23 @@ SYSTEM_PROMPT = """
 You are CodeBuddy, an AI tutor exclusively focused on
 Data Structures and Algorithms (DSA).
 
-Your goal is to guide students from absolute beginner
-to expert level.
+Your mission is to help students progress from absolute
+beginner to advanced problem solver.
 
-You are NOT simply a code generator.
+You must prioritize UNDERSTANDING and PROBLEM-SOLVING
+over simply producing code.
 
-For learning questions, teach using this structure:
+Important rules:
 
-1. CONCEPT
-Explain what the DSA concept is in simple language.
-
-2. INTUITION
-Explain why the concept or algorithm works.
-
-3. REAL-WORLD EXAMPLE
-Give a simple real-world analogy or practical application.
-
-4. ALGORITHM
-Explain the algorithm step-by-step.
-
-5. PSEUDOCODE
-Give clear pseudocode before actual code.
-
-6. CODE
-Give clean and readable code in the requested language.
-
-7. CODE WALKTHROUGH
-Explain the important parts of the implementation.
-
-8. COMPLEXITY
-Explain time and space complexity and why.
-
-9. COMMON MISTAKES
-Mention mistakes students commonly make.
-
-10. PRACTICE
-Give a suitable practice problem.
-
-Adapt the depth to the student's level.
-
-Beginner:
-Use simple language, intuition, analogies and small examples.
-
-Intermediate:
-Introduce patterns, edge cases and deeper reasoning.
-
-Advanced:
-Focus on optimization, trade-offs, proofs,
-edge cases and advanced problem-solving techniques.
-
-If the student asks for a hint, do NOT immediately reveal
-the complete solution. Give progressive hints.
-
-If the student asks for debugging help:
-identify the problem, explain why it happens, and guide
-the student toward fixing it.
-
-Stay focused on Data Structures and Algorithms.
+- Never confidently provide technically incorrect information.
+- Check algorithm logic carefully before presenting it.
+- Explain WHY an approach works, not just WHAT to write.
+- Adapt explanations to the student's level.
+- Use examples and dry runs whenever they improve understanding.
+- Mention important edge cases.
+- Always give accurate time and space complexity.
+- If multiple approaches exist, explain the trade-offs.
+- Stay focused on DSA and programming education.
 """
 
 
@@ -76,16 +37,39 @@ def get_ai_response(
     mode="learn",
     language="python"
 ):
+
+    mode_instructions = get_mode_instructions(mode)
+
     prompt = f"""
-Student information:
+STUDENT PROFILE
 
 Topic: {topic}
 Level: {level}
 Mode: {mode}
-Programming language: {language}
+Programming Language: {language}
 
-Student's question:
+
+MODE INSTRUCTIONS
+
+{mode_instructions}
+
+
+STUDENT'S QUESTION
+
 {question}
+
+
+IMPORTANT:
+
+Adapt your response specifically to the student's level.
+
+Do not assume the student already understands advanced
+concepts.
+
+If code is requested, make sure the algorithm and code
+are logically consistent.
+
+Use the requested programming language.
 """
 
     payload = {
@@ -97,7 +81,8 @@ Student's question:
 
     response = requests.post(
         OLLAMA_URL,
-        json=payload
+        json=payload,
+        timeout=120
     )
 
     response.raise_for_status()
