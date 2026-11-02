@@ -1,19 +1,31 @@
 import { useEffect, useState } from "react";
 import Visualizer from "./Visualizer";
+import BinarySearchPractice from "./BinarySearchPractice";
+import { binarySearchContent } from "./algorithms/binarySearchData";
 
 function ConceptPage({ topic, onBack }) {
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const isCurated = topic === "Binary Search";
+
+  const [backendData, setBackendData] = useState(null);
+  const [backendLoading, setBackendLoading] = useState(true);
+  const [backendError, setBackendError] = useState("");
   const [mode, setMode] = useState("learn");
 
+  const data = isCurated ? binarySearchContent : backendData;
+  const loading = isCurated ? false : backendLoading;
+  const error = isCurated ? "" : backendError;
+
   useEffect(() => {
+    if (!topic || topic === "Binary Search") return;
+
+    let cancelled = false;
+
     async function fetchConcept() {
       try {
-        setLoading(true);
-        setError("");
+        setBackendLoading(true);
+        setBackendError("");
 
-        const response = await fetch("http://127.0.0.1:5000/ask", {
+        const response = await fetch("http://127.0.0.1:5001/ask", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -44,21 +56,26 @@ function ConceptPage({ topic, onBack }) {
           }
         }
 
-        setData(answer);
+        if (!cancelled) {
+          setBackendData(answer);
+        }
       } catch (err) {
-        console.error(err);
-        setError(err.message || "Could not connect to backend.");
+        if (!cancelled) {
+          console.error(err);
+          setBackendError(err.message || "Could not connect to backend.");
+        }
       } finally {
-        setLoading(false);
+        if (!cancelled) {
+          setBackendLoading(false);
+        }
       }
     }
 
-    if (topic) {
-      fetchConcept();
-    } else {
-      setError("No topic selected.");
-      setLoading(false);
-    }
+    fetchConcept();
+
+    return () => {
+      cancelled = true;
+    };
   }, [topic]);
 
   return (
@@ -340,29 +357,25 @@ function ConceptPage({ topic, onBack }) {
 
         {!loading &&
           !error &&
-          mode === "practice" && (
-
+          mode === "practice" &&
+          (topic === "Binary Search" ? (
+            <BinarySearchPractice />
+          ) : (
             <section className="card practice-card">
-
               <h2>🧩 Practice: {topic}</h2>
 
               <p>
-                Try implementing {topic} in Java.
-                Start with the basic logic and test
-                your solution with a small example.
+                Interactive practice modules for <strong>{topic}</strong> are currently under development.
               </p>
 
-              <button
-                className="practice-button"
-                onClick={() =>
-                  alert("Practice mode is coming next!")
-                }
-              >
-                Start Practice →
-              </button>
-
+              <div className="practice-available-box">
+                <span className="available-label">Active Practice Modules:</span>
+                <p>
+                  Switch to <strong>Binary Search</strong> from the sidebar to try our full interactive Practice Studio!
+                </p>
+              </div>
             </section>
-          )}
+          ))}
 
       </main>
 
