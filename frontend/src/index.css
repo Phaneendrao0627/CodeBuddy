@@ -2455,3 +2455,81 @@ code {
   color: #94a3b8;
   text-transform: uppercase;
 }
+
+/* =========================================
+   MULTILINGUAL LANGUAGE SELECTOR
+========================================= */
+
+.language-selector-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 4px 10px;
+}
+
+.language-selector-group.size-small {
+  padding: 2px 6px;
+  gap: 6px;
+}
+
+.lang-selector-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.lang-pill-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.lang-pill-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #475569;
+  background: transparent;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.language-selector-group.size-small .lang-pill-btn {
+  padding: 4px 10px;
+  font-size: 12px;
+}
+
+.lang-pill-btn:hover {
+  background: #f1f5f9;
+  color: #1e293b;
+}
+
+.lang-pill-btn.active {
+  background: #2563eb;
+  color: #ffffff;
+  border-color: #1d4ed8;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);
+}
+
+.lang-pill-btn .lang-icon {
+  font-size: 13px;
+}
+
+.code-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+  gap: 12px;
+}

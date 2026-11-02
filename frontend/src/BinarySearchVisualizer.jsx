@@ -1,4 +1,10 @@
 import { useEffect, useState } from "react";
+import LanguageSelector from "./components/LanguageSelector";
+import { binarySearchContent } from "./algorithms/binarySearchData";
+import {
+  LANGUAGE_LABELS,
+  useLanguagePreference
+} from "./utils/languagePreferences";
 import {
   generateBinarySearchTrace,
   sortArrayAscending,
@@ -33,35 +39,8 @@ const PRESETS = [
   }
 ];
 
-const JAVA_CODE_LINES = [
-  { line: 1, text: "int low = 0, high = numbers.length - 1;" },
-  { line: 2, text: "while (low <= high) {" },
-  { line: 3, text: "    int mid = low + (high - low) / 2;" },
-  { line: 4, text: "    if (numbers[mid] == target)" },
-  { line: 5, text: "        return mid; // Found!" },
-  { line: 6, text: "    else if (numbers[mid] < target)" },
-  { line: 7, text: "        low = mid + 1; // Search right half" },
-  { line: 8, text: "    else" },
-  { line: 9, text: "        high = mid - 1; // Search left half" },
-  { line: 10, text: "}" },
-  { line: 11, text: "return -1; // Not found" }
-];
-
-function mapTraceToCodeLine(step) {
-  if (!step) return null;
-  if (step.phase === "initial") return 1;
-  if (step.phase === "found") return 5;
-  if (step.phase === "not_found") return 11;
-  if (step.phase === "comparing") {
-    if (step.comparedValue < step.target) {
-      return 7; // low = mid + 1
-    }
-    return 9; // high = mid - 1
-  }
-  return 3;
-}
-
 function BinarySearchVisualizer() {
+  const [language, setLanguage] = useLanguagePreference();
   const [rawArray, setRawArray] = useState(PRESETS[0].array);
   const [rawTarget, setRawTarget] = useState(PRESETS[0].target);
 
@@ -162,7 +141,10 @@ function BinarySearchVisualizer() {
   }
 
   const currentStep = trace[stepIndex] || trace[0] || {};
-  const activeCodeLine = mapTraceToCodeLine(currentStep);
+  const currentImpl =
+    binarySearchContent.implementations[language] ||
+    binarySearchContent.implementations.java;
+  const activeCodeLine = currentImpl.mapStepToLine(currentStep);
 
   function getPointersForIndex(index) {
     const isLow = currentStep.low === index;
@@ -496,13 +478,20 @@ function BinarySearchVisualizer() {
         {/* CODE SYNCHRONIZATION PANEL */}
         <div className="bs-code-card">
           <div className="code-header">
-            <h3>💻 Executing Java Logic</h3>
+            <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
+              <h3>💻 Executing {LANGUAGE_LABELS[language] || "Code"} Logic</h3>
+              <LanguageSelector
+                language={language}
+                onSelectLanguage={setLanguage}
+                size="small"
+              />
+            </div>
             <span className="code-badge">Active Line {activeCodeLine}</span>
           </div>
 
           <pre className="bs-code-block">
             <code>
-              {JAVA_CODE_LINES.map(({ line, text }) => (
+              {currentImpl.codeLines.map(({ line, text }) => (
                 <div
                   key={line}
                   className={`code-line ${activeCodeLine === line ? "line-highlight" : ""}`}

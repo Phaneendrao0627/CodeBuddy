@@ -1,22 +1,37 @@
 import { useEffect, useState } from "react";
 import Visualizer from "./Visualizer";
 import BinarySearchPractice from "./BinarySearchPractice";
+import LinearSearchPractice from "./LinearSearchPractice";
+import LanguageSelector from "./components/LanguageSelector";
 import { binarySearchContent } from "./algorithms/binarySearchData";
+import { linearSearchContent } from "./algorithms/linearSearchData";
+import { bubbleSortContent } from "./algorithms/bubbleSortData";
+import {
+  LANGUAGE_LABELS,
+  useLanguagePreference
+} from "./utils/languagePreferences";
+
+const CURATED_TOPICS = {
+  "Binary Search": binarySearchContent,
+  "Linear Search": linearSearchContent,
+  "Bubble Sort": bubbleSortContent,
+};
 
 function ConceptPage({ topic, onBack }) {
-  const isCurated = topic === "Binary Search";
+  const isCurated = Boolean(CURATED_TOPICS[topic]);
+  const [language, setLanguage] = useLanguagePreference();
 
   const [backendData, setBackendData] = useState(null);
   const [backendLoading, setBackendLoading] = useState(true);
   const [backendError, setBackendError] = useState("");
   const [mode, setMode] = useState("learn");
 
-  const data = isCurated ? binarySearchContent : backendData;
+  const data = isCurated ? CURATED_TOPICS[topic] : backendData;
   const loading = isCurated ? false : backendLoading;
   const error = isCurated ? "" : backendError;
 
   useEffect(() => {
-    if (!topic || topic === "Binary Search") return;
+    if (!topic || isCurated) return;
 
     let cancelled = false;
 
@@ -36,7 +51,7 @@ function ConceptPage({ topic, onBack }) {
             topic: topic,
             level: "beginner",
             mode: "learn",
-            language: "java",
+            language: language,
           }),
         });
 
@@ -76,7 +91,7 @@ function ConceptPage({ topic, onBack }) {
     return () => {
       cancelled = true;
     };
-  }, [topic]);
+  }, [topic, isCurated, language]);
 
   return (
     <div className="concept-page">
@@ -233,22 +248,29 @@ function ConceptPage({ topic, onBack }) {
                 </section>
               )}
 
-              {data.code && (
+              {data && (data.implementations?.[language]?.code || data.code) && (
                 <section className="card">
-                  <h2>💻 Java Code</h2>
+                  <div className="code-header-row">
+                    <h2>💻 {LANGUAGE_LABELS[language] || "Language"} Code</h2>
+                    <LanguageSelector
+                      language={language}
+                      onSelectLanguage={setLanguage}
+                      size="small"
+                    />
+                  </div>
 
                   <pre className="code-block">
-                    <code>{data.code}</code>
+                    <code>{data.implementations?.[language]?.code || data.code}</code>
                   </pre>
                 </section>
               )}
 
-              {data.code_explanation && (
+              {data && (data.implementations?.[language]?.code_explanation || data.code_explanation) && (
                 <section className="card">
-                  <h2>🔍 Code Explanation</h2>
+                  <h2>🔍 {LANGUAGE_LABELS[language] || "Language"} Code Explanation</h2>
 
                   <p className="pre-text">
-                    {data.code_explanation}
+                    {data.implementations?.[language]?.code_explanation || data.code_explanation}
                   </p>
                 </section>
               )}
@@ -360,6 +382,8 @@ function ConceptPage({ topic, onBack }) {
           mode === "practice" &&
           (topic === "Binary Search" ? (
             <BinarySearchPractice />
+          ) : topic === "Linear Search" ? (
+            <LinearSearchPractice />
           ) : (
             <section className="card practice-card">
               <h2>🧩 Practice: {topic}</h2>
@@ -371,7 +395,7 @@ function ConceptPage({ topic, onBack }) {
               <div className="practice-available-box">
                 <span className="available-label">Active Practice Modules:</span>
                 <p>
-                  Switch to <strong>Binary Search</strong> from the sidebar to try our full interactive Practice Studio!
+                  Try <strong>Binary Search</strong> or <strong>Linear Search</strong> from the sidebar to use our full interactive Practice Studio!
                 </p>
               </div>
             </section>

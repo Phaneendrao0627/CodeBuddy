@@ -1,7 +1,12 @@
 import BinarySearchVisualizer from "./BinarySearchVisualizer";
 import BubbleSortVisualizer from "./BubbleSortVisualizer";
+import LinearSearchVisualizer from "./LinearSearchVisualizer";
 
 function Visualizer({ topic }) {
+  if (topic === "Linear Search") {
+    return <LinearSearchVisualizer />;
+  }
+
   if (topic === "Binary Search") {
     return <BinarySearchVisualizer />;
   }
@@ -21,6 +26,9 @@ function Visualizer({ topic }) {
       <div className="placeholder-supported-box">
         <span className="supported-title">Available Interactive Visualizers:</span>
         <div className="supported-badges">
+          <span className="algo-badge active">
+            🔍 Linear Search (Sequential Scan &amp; Tracing)
+          </span>
           <span className="algo-badge active">
             🔍 Binary Search (Dynamic Inputs &amp; Step Tracing)
           </span>

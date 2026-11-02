@@ -1,6 +1,14 @@
 import { useCallback, useEffect, useState } from "react";
+import LanguageSelector from "./components/LanguageSelector";
+import { bubbleSortContent } from "./algorithms/bubbleSortData";
+import {
+  LANGUAGE_LABELS,
+  useLanguagePreference
+} from "./utils/languagePreferences";
 
 function BubbleSortVisualizer() {
+  const [language, setLanguage] = useLanguagePreference();
+
   const originalArray = [5, 3, 8, 4, 2];
 
   const [array, setArray] = useState(originalArray);
@@ -11,6 +19,7 @@ function BubbleSortVisualizer() {
   const [sortedFrom, setSortedFrom] = useState(originalArray.length);
   const [finished, setFinished] = useState(false);
   const [playing, setPlaying] = useState(false);
+  const [lastSwapped, setLastSwapped] = useState(false);
 
   const nextStep = useCallback(() => {
     if (finished) return;
@@ -20,7 +29,10 @@ function BubbleSortVisualizer() {
     setComparing([j, j + 1]);
     setSteps((prev) => prev + 1);
 
-    if (newArray[j] > newArray[j + 1]) {
+    const didSwap = newArray[j] > newArray[j + 1];
+    setLastSwapped(didSwap);
+
+    if (didSwap) {
       const temp = newArray[j];
       newArray[j] = newArray[j + 1];
       newArray[j + 1] = temp;
@@ -62,7 +74,18 @@ function BubbleSortVisualizer() {
     setSortedFrom(originalArray.length);
     setFinished(false);
     setPlaying(false);
+    setLastSwapped(false);
   }
+
+  const currentImpl =
+    bubbleSortContent.implementations[language] ||
+    bubbleSortContent.implementations.java;
+
+  const activeCodeLine = currentImpl.mapStepToLine({
+    comparing: comparing.length > 0,
+    swapped: lastSwapped,
+    finished
+  });
 
   return (
     <div className="visualizer">
@@ -140,6 +163,35 @@ function BubbleSortVisualizer() {
         <button className="visualizer-button secondary" onClick={reset}>
           ↻ Reset
         </button>
+      </div>
+
+      {/* CODE SYNCHRONIZATION PANEL */}
+      <div className="bs-code-card" style={{ marginTop: "24px" }}>
+        <div className="code-header">
+          <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
+            <h3>💻 Executing {LANGUAGE_LABELS[language] || "Code"} Logic</h3>
+            <LanguageSelector
+              language={language}
+              onSelectLanguage={setLanguage}
+              size="small"
+            />
+          </div>
+          <span className="code-badge">Active Line {activeCodeLine}</span>
+        </div>
+
+        <pre className="bs-code-block">
+          <code>
+            {currentImpl.codeLines.map(({ line, text }) => (
+              <div
+                key={line}
+                className={`code-line ${activeCodeLine === line ? "line-highlight" : ""}`}
+              >
+                <span className="line-num">{line}</span>
+                <span className="line-content">{text}</span>
+              </div>
+            ))}
+          </code>
+        </pre>
       </div>
     </div>
   );
