@@ -1,5 +1,6 @@
 import BinarySearchVisualizer from "./BinarySearchVisualizer";
 import BubbleSortVisualizer from "./BubbleSortVisualizer";
+import JumpSearchVisualizer from "./JumpSearchVisualizer";
 import LinearSearchVisualizer from "./LinearSearchVisualizer";
 
 function Visualizer({ topic }) {
@@ -9,6 +10,10 @@ function Visualizer({ topic }) {
 
   if (topic === "Binary Search") {
     return <BinarySearchVisualizer />;
+  }
+
+  if (topic === "Jump Search") {
+    return <JumpSearchVisualizer />;
   }
 
   if (topic === "Bubble Sort") {
@@ -31,6 +36,9 @@ function Visualizer({ topic }) {
           </span>
           <span className="algo-badge active">
             🔍 Binary Search (Dynamic Inputs &amp; Step Tracing)
+          </span>
+          <span className="algo-badge active">
+            🐇 Jump Search (Block Jumping &amp; Linear Scan)
           </span>
           <span className="algo-badge">
             ↕️ Bubble Sort (Step Stepper)

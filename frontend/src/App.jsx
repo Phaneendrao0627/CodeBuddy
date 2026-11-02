@@ -1,9 +1,15 @@
 import { useState } from "react";
 import ConceptPage from "./ConceptPage";
+import AlgorithmEntryAnimation from "./components/AlgorithmEntryAnimation";
+import {
+  hasSeenEntryAnimation,
+  markEntryAnimationSeen,
+} from "./utils/entryAnimationTracker";
 import "./index.css";
 
 function App() {
   const [selectedTopic, setSelectedTopic] = useState(null);
+  const [isAnimatingEntry, setIsAnimatingEntry] = useState(false);
 
   const topics = {
     "Arrays": [
@@ -30,6 +36,7 @@ function App() {
     "Searching": [
       "Linear Search",
       "Binary Search",
+      "Jump Search",
       "Binary Search Variations",
     ],
 
@@ -122,11 +129,38 @@ function App() {
     ],
   };
 
+  function handleSelectTopic(topic) {
+    setSelectedTopic(topic);
+    if (!hasSeenEntryAnimation(topic)) {
+      setIsAnimatingEntry(true);
+    } else {
+      setIsAnimatingEntry(false);
+    }
+  }
+
+  function handleAnimationComplete() {
+    if (selectedTopic) {
+      markEntryAnimationSeen(selectedTopic);
+    }
+    setIsAnimatingEntry(false);
+  }
+
   if (selectedTopic) {
+    if (isAnimatingEntry) {
+      return (
+        <AlgorithmEntryAnimation
+          algorithmName={selectedTopic}
+          onComplete={handleAnimationComplete}
+        />
+      );
+    }
     return (
       <ConceptPage
         topic={selectedTopic}
-        onBack={() => setSelectedTopic(null)}
+        onBack={() => {
+          setSelectedTopic(null);
+          setIsAnimatingEntry(false);
+        }}
       />
     );
   }
@@ -182,9 +216,7 @@ function App() {
                       <button
                         key={topic}
                         className="concept-button"
-                        onClick={() =>
-                          setSelectedTopic(topic)
-                        }
+                        onClick={() => handleSelectTopic(topic)}
                       >
                         {topic}
                       </button>

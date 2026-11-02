@@ -2,9 +2,11 @@ import { useEffect, useState } from "react";
 import Visualizer from "./Visualizer";
 import BinarySearchPractice from "./BinarySearchPractice";
 import LinearSearchPractice from "./LinearSearchPractice";
+import JumpSearchPractice from "./JumpSearchPractice";
 import LanguageSelector from "./components/LanguageSelector";
 import { binarySearchContent } from "./algorithms/binarySearchData";
 import { linearSearchContent } from "./algorithms/linearSearchData";
+import { jumpSearchContent } from "./algorithms/jumpSearchData";
 import { bubbleSortContent } from "./algorithms/bubbleSortData";
 import {
   LANGUAGE_LABELS,
@@ -14,6 +16,7 @@ import {
 const CURATED_TOPICS = {
   "Binary Search": binarySearchContent,
   "Linear Search": linearSearchContent,
+  "Jump Search": jumpSearchContent,
   "Bubble Sort": bubbleSortContent,
 };
 
@@ -202,6 +205,13 @@ function ConceptPage({ topic, onBack }) {
                 </section>
               )}
 
+              {data.prerequisites && (
+                <section className="card">
+                  <h2>📋 Prerequisites</h2>
+                  <p>{data.prerequisites}</p>
+                </section>
+              )}
+
               {data.intuition && (
                 <section className="card">
                   <h2>💡 Intuition</h2>
@@ -329,6 +339,21 @@ function ConceptPage({ topic, onBack }) {
                 </section>
               )}
 
+              {Array.isArray(data.advantages) && (
+                <section className="card">
+                  <h2>⚖️ Advantages &amp; Disadvantages</h2>
+                  <ul>
+                    {data.advantages.map((adv, index) => (
+                      <li key={`adv-${index}`}><strong>Advantage:</strong> {adv}</li>
+                    ))}
+                    {Array.isArray(data.disadvantages) &&
+                      data.disadvantages.map((dis, index) => (
+                        <li key={`dis-${index}`}><strong>Disadvantage:</strong> {dis}</li>
+                      ))}
+                  </ul>
+                </section>
+              )}
+
               {data.practice && (
                 <section className="card practice-card">
 
@@ -384,6 +409,8 @@ function ConceptPage({ topic, onBack }) {
             <BinarySearchPractice />
           ) : topic === "Linear Search" ? (
             <LinearSearchPractice />
+          ) : topic === "Jump Search" ? (
+            <JumpSearchPractice />
           ) : (
             <section className="card practice-card">
               <h2>🧩 Practice: {topic}</h2>
@@ -395,7 +422,7 @@ function ConceptPage({ topic, onBack }) {
               <div className="practice-available-box">
                 <span className="available-label">Active Practice Modules:</span>
                 <p>
-                  Try <strong>Binary Search</strong> or <strong>Linear Search</strong> from the sidebar to use our full interactive Practice Studio!
+                  Try <strong>Binary Search</strong>, <strong>Linear Search</strong>, or <strong>Jump Search</strong> from the sidebar to use our full interactive Practice Studio!
                 </p>
               </div>
             </section>
