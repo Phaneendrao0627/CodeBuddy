@@ -6,6 +6,7 @@ import { bubbleSortContent } from "../frontend/src/algorithms/bubbleSortData.js"
 import { jumpSearchContent } from "../frontend/src/algorithms/jumpSearchData.js";
 import { insertionSortContent } from "../frontend/src/algorithms/insertionSortData.js";
 import { selectionSortContent } from "../frontend/src/algorithms/selectionSortData.js";
+import { mergeSortContent } from "../frontend/src/algorithms/mergeSortData.js";
 import { generateBinarySearchTrace } from "../frontend/src/algorithms/binarySearch.js";
 import { generateLinearSearchTrace } from "../frontend/src/algorithms/linearSearch.js";
 import {
@@ -23,7 +24,8 @@ const ALGORITHMS = [
   { name: "Bubble Sort", data: bubbleSortContent },
   { name: "Jump Search", data: jumpSearchContent },
   { name: "Insertion Sort", data: insertionSortContent },
-  { name: "Selection Sort", data: selectionSortContent }
+  { name: "Selection Sort", data: selectionSortContent },
+  { name: "Merge Sort", data: mergeSortContent }
 ];
 
 describe("Multilingual Architecture - Algorithm Schema Verification", () => {
@@ -212,6 +214,51 @@ describe("Multilingual Visualizer - Trace to Code Line Synchronization", () => {
     assert.equal(selectionSortContent.implementations.python.mapStepToLine(swapStep), 8);
     assert.equal(selectionSortContent.implementations.python.mapStepToLine(passCompleteStep), 2);
     assert.equal(selectionSortContent.implementations.python.mapStepToLine(completeStep), 8);
+  });
+
+  it("synchronizes Merge Sort phases across C, Java, and Python", () => {
+    const splitStep = { phase: "split" };
+    const baseCaseStep = { phase: "base_case" };
+    const mergeStartStep = { phase: "merge_start" };
+    const compareStep = { phase: "compare" };
+    const copyLeftStep = { phase: "copy_left" };
+    const copyRightStep = { phase: "copy_right" };
+    const copyRemainingStep = { phase: "copy_remaining" };
+    const mergeCompleteStep = { phase: "merge_complete" };
+    const completeStep = { phase: "complete", finished: true };
+
+    // C
+    assert.equal(mergeSortContent.implementations.c.mapStepToLine(splitStep), 3);
+    assert.equal(mergeSortContent.implementations.c.mapStepToLine(baseCaseStep), 2);
+    assert.equal(mergeSortContent.implementations.c.mapStepToLine(mergeStartStep), 8);
+    assert.equal(mergeSortContent.implementations.c.mapStepToLine(compareStep), 10);
+    assert.equal(mergeSortContent.implementations.c.mapStepToLine(copyLeftStep), 10);
+    assert.equal(mergeSortContent.implementations.c.mapStepToLine(copyRightStep), 11);
+    assert.equal(mergeSortContent.implementations.c.mapStepToLine(copyRemainingStep), 13);
+    assert.equal(mergeSortContent.implementations.c.mapStepToLine(mergeCompleteStep), 6);
+    assert.equal(mergeSortContent.implementations.c.mapStepToLine(completeStep), 7);
+
+    // Java
+    assert.equal(mergeSortContent.implementations.java.mapStepToLine(splitStep), 3);
+    assert.equal(mergeSortContent.implementations.java.mapStepToLine(baseCaseStep), 2);
+    assert.equal(mergeSortContent.implementations.java.mapStepToLine(mergeStartStep), 8);
+    assert.equal(mergeSortContent.implementations.java.mapStepToLine(compareStep), 10);
+    assert.equal(mergeSortContent.implementations.java.mapStepToLine(copyLeftStep), 10);
+    assert.equal(mergeSortContent.implementations.java.mapStepToLine(copyRightStep), 11);
+    assert.equal(mergeSortContent.implementations.java.mapStepToLine(copyRemainingStep), 13);
+    assert.equal(mergeSortContent.implementations.java.mapStepToLine(mergeCompleteStep), 6);
+    assert.equal(mergeSortContent.implementations.java.mapStepToLine(completeStep), 7);
+
+    // Python
+    assert.equal(mergeSortContent.implementations.python.mapStepToLine(splitStep), 3);
+    assert.equal(mergeSortContent.implementations.python.mapStepToLine(baseCaseStep), 2);
+    assert.equal(mergeSortContent.implementations.python.mapStepToLine(mergeStartStep), 7);
+    assert.equal(mergeSortContent.implementations.python.mapStepToLine(compareStep), 9);
+    assert.equal(mergeSortContent.implementations.python.mapStepToLine(copyLeftStep), 9);
+    assert.equal(mergeSortContent.implementations.python.mapStepToLine(copyRightStep), 10);
+    assert.equal(mergeSortContent.implementations.python.mapStepToLine(copyRemainingStep), 12);
+    assert.equal(mergeSortContent.implementations.python.mapStepToLine(mergeCompleteStep), 6);
+    assert.equal(mergeSortContent.implementations.python.mapStepToLine(completeStep), 6);
   });
 });
 

@@ -4,6 +4,7 @@ import InsertionSortVisualizer from "./InsertionSortVisualizer";
 import JumpSearchVisualizer from "./JumpSearchVisualizer";
 import LinearSearchVisualizer from "./LinearSearchVisualizer";
 import SelectionSortVisualizer from "./SelectionSortVisualizer";
+import MergeSortVisualizer from "./MergeSortVisualizer";
 
 function Visualizer({ topic }) {
   if (topic === "Linear Search") {
@@ -28,6 +29,10 @@ function Visualizer({ topic }) {
 
   if (topic === "Selection Sort") {
     return <SelectionSortVisualizer />;
+  }
+
+  if (topic === "Merge Sort") {
+    return <MergeSortVisualizer />;
   }
 
   return (
