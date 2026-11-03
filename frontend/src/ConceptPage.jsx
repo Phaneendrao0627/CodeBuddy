@@ -3,11 +3,13 @@ import Visualizer from "./Visualizer";
 import BinarySearchPractice from "./BinarySearchPractice";
 import LinearSearchPractice from "./LinearSearchPractice";
 import JumpSearchPractice from "./JumpSearchPractice";
+import InsertionSortPractice from "./InsertionSortPractice";
 import LanguageSelector from "./components/LanguageSelector";
 import { binarySearchContent } from "./algorithms/binarySearchData";
 import { linearSearchContent } from "./algorithms/linearSearchData";
 import { jumpSearchContent } from "./algorithms/jumpSearchData";
 import { bubbleSortContent } from "./algorithms/bubbleSortData";
+import { insertionSortContent } from "./algorithms/insertionSortData";
 import {
   LANGUAGE_LABELS,
   useLanguagePreference
@@ -18,6 +20,7 @@ const CURATED_TOPICS = {
   "Linear Search": linearSearchContent,
   "Jump Search": jumpSearchContent,
   "Bubble Sort": bubbleSortContent,
+  "Insertion Sort": insertionSortContent,
 };
 
 function ConceptPage({ topic, onBack }) {
@@ -411,6 +414,8 @@ function ConceptPage({ topic, onBack }) {
             <LinearSearchPractice />
           ) : topic === "Jump Search" ? (
             <JumpSearchPractice />
+          ) : topic === "Insertion Sort" ? (
+            <InsertionSortPractice />
           ) : (
             <section className="card practice-card">
               <h2>🧩 Practice: {topic}</h2>
@@ -422,7 +427,7 @@ function ConceptPage({ topic, onBack }) {
               <div className="practice-available-box">
                 <span className="available-label">Active Practice Modules:</span>
                 <p>
-                  Try <strong>Binary Search</strong>, <strong>Linear Search</strong>, or <strong>Jump Search</strong> from the sidebar to use our full interactive Practice Studio!
+                  Try <strong>Binary Search</strong>, <strong>Linear Search</strong>, <strong>Jump Search</strong>, or <strong>Insertion Sort</strong> from the sidebar to use our full interactive Practice Studio!
                 </p>
               </div>
             </section>

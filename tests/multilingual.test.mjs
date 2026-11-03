@@ -3,6 +3,8 @@ import assert from "node:assert/strict";
 import { binarySearchContent } from "../frontend/src/algorithms/binarySearchData.js";
 import { linearSearchContent } from "../frontend/src/algorithms/linearSearchData.js";
 import { bubbleSortContent } from "../frontend/src/algorithms/bubbleSortData.js";
+import { jumpSearchContent } from "../frontend/src/algorithms/jumpSearchData.js";
+import { insertionSortContent } from "../frontend/src/algorithms/insertionSortData.js";
 import { generateBinarySearchTrace } from "../frontend/src/algorithms/binarySearch.js";
 import { generateLinearSearchTrace } from "../frontend/src/algorithms/linearSearch.js";
 import {
@@ -17,7 +19,9 @@ import {
 const ALGORITHMS = [
   { name: "Binary Search", data: binarySearchContent },
   { name: "Linear Search", data: linearSearchContent },
-  { name: "Bubble Sort", data: bubbleSortContent }
+  { name: "Bubble Sort", data: bubbleSortContent },
+  { name: "Jump Search", data: jumpSearchContent },
+  { name: "Insertion Sort", data: insertionSortContent }
 ];
 
 describe("Multilingual Architecture - Algorithm Schema Verification", () => {
@@ -144,6 +148,35 @@ describe("Multilingual Visualizer - Trace to Code Line Synchronization", () => {
     assert.equal(bubbleSortContent.implementations.python.mapStepToLine(compareStep), 4);
     assert.equal(bubbleSortContent.implementations.python.mapStepToLine(swapStep), 5);
     assert.equal(bubbleSortContent.implementations.python.mapStepToLine(finishStep), 6);
+  });
+
+  it("synchronizes Insertion Sort phases across C, Java, and Python", () => {
+    const keyStep = { phase: "select_key" };
+    const compareStep = { phase: "compare" };
+    const shiftStep = { phase: "shift" };
+    const insertStep = { phase: "insert" };
+    const completeStep = { phase: "complete", finished: true };
+
+    // C
+    assert.equal(insertionSortContent.implementations.c.mapStepToLine(keyStep), 3);
+    assert.equal(insertionSortContent.implementations.c.mapStepToLine(compareStep), 5);
+    assert.equal(insertionSortContent.implementations.c.mapStepToLine(shiftStep), 6);
+    assert.equal(insertionSortContent.implementations.c.mapStepToLine(insertStep), 9);
+    assert.equal(insertionSortContent.implementations.c.mapStepToLine(completeStep), 11);
+
+    // Java
+    assert.equal(insertionSortContent.implementations.java.mapStepToLine(keyStep), 3);
+    assert.equal(insertionSortContent.implementations.java.mapStepToLine(compareStep), 5);
+    assert.equal(insertionSortContent.implementations.java.mapStepToLine(shiftStep), 6);
+    assert.equal(insertionSortContent.implementations.java.mapStepToLine(insertStep), 9);
+    assert.equal(insertionSortContent.implementations.java.mapStepToLine(completeStep), 11);
+
+    // Python
+    assert.equal(insertionSortContent.implementations.python.mapStepToLine(keyStep), 3);
+    assert.equal(insertionSortContent.implementations.python.mapStepToLine(compareStep), 5);
+    assert.equal(insertionSortContent.implementations.python.mapStepToLine(shiftStep), 6);
+    assert.equal(insertionSortContent.implementations.python.mapStepToLine(insertStep), 8);
+    assert.equal(insertionSortContent.implementations.python.mapStepToLine(completeStep), 8);
   });
 });
 
