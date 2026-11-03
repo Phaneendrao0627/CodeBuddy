@@ -5,6 +5,7 @@ import { linearSearchContent } from "../frontend/src/algorithms/linearSearchData
 import { bubbleSortContent } from "../frontend/src/algorithms/bubbleSortData.js";
 import { jumpSearchContent } from "../frontend/src/algorithms/jumpSearchData.js";
 import { insertionSortContent } from "../frontend/src/algorithms/insertionSortData.js";
+import { selectionSortContent } from "../frontend/src/algorithms/selectionSortData.js";
 import { generateBinarySearchTrace } from "../frontend/src/algorithms/binarySearch.js";
 import { generateLinearSearchTrace } from "../frontend/src/algorithms/linearSearch.js";
 import {
@@ -21,7 +22,8 @@ const ALGORITHMS = [
   { name: "Linear Search", data: linearSearchContent },
   { name: "Bubble Sort", data: bubbleSortContent },
   { name: "Jump Search", data: jumpSearchContent },
-  { name: "Insertion Sort", data: insertionSortContent }
+  { name: "Insertion Sort", data: insertionSortContent },
+  { name: "Selection Sort", data: selectionSortContent }
 ];
 
 describe("Multilingual Architecture - Algorithm Schema Verification", () => {
@@ -177,6 +179,39 @@ describe("Multilingual Visualizer - Trace to Code Line Synchronization", () => {
     assert.equal(insertionSortContent.implementations.python.mapStepToLine(shiftStep), 6);
     assert.equal(insertionSortContent.implementations.python.mapStepToLine(insertStep), 8);
     assert.equal(insertionSortContent.implementations.python.mapStepToLine(completeStep), 8);
+  });
+
+  it("synchronizes Selection Sort phases across C, Java, and Python", () => {
+    const startPassStep = { phase: "start_pass" };
+    const compareStep = { phase: "compare" };
+    const updateMinStep = { phase: "update_min" };
+    const swapStep = { phase: "swap" };
+    const passCompleteStep = { phase: "pass_complete" };
+    const completeStep = { phase: "complete", finished: true };
+
+    // C
+    assert.equal(selectionSortContent.implementations.c.mapStepToLine(startPassStep), 3);
+    assert.equal(selectionSortContent.implementations.c.mapStepToLine(compareStep), 5);
+    assert.equal(selectionSortContent.implementations.c.mapStepToLine(updateMinStep), 6);
+    assert.equal(selectionSortContent.implementations.c.mapStepToLine(swapStep), 10);
+    assert.equal(selectionSortContent.implementations.c.mapStepToLine(passCompleteStep), 12);
+    assert.equal(selectionSortContent.implementations.c.mapStepToLine(completeStep), 13);
+
+    // Java
+    assert.equal(selectionSortContent.implementations.java.mapStepToLine(startPassStep), 3);
+    assert.equal(selectionSortContent.implementations.java.mapStepToLine(compareStep), 5);
+    assert.equal(selectionSortContent.implementations.java.mapStepToLine(updateMinStep), 6);
+    assert.equal(selectionSortContent.implementations.java.mapStepToLine(swapStep), 10);
+    assert.equal(selectionSortContent.implementations.java.mapStepToLine(passCompleteStep), 12);
+    assert.equal(selectionSortContent.implementations.java.mapStepToLine(completeStep), 13);
+
+    // Python
+    assert.equal(selectionSortContent.implementations.python.mapStepToLine(startPassStep), 3);
+    assert.equal(selectionSortContent.implementations.python.mapStepToLine(compareStep), 5);
+    assert.equal(selectionSortContent.implementations.python.mapStepToLine(updateMinStep), 6);
+    assert.equal(selectionSortContent.implementations.python.mapStepToLine(swapStep), 8);
+    assert.equal(selectionSortContent.implementations.python.mapStepToLine(passCompleteStep), 2);
+    assert.equal(selectionSortContent.implementations.python.mapStepToLine(completeStep), 8);
   });
 });
 

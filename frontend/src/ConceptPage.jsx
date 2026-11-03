@@ -4,12 +4,14 @@ import BinarySearchPractice from "./BinarySearchPractice";
 import LinearSearchPractice from "./LinearSearchPractice";
 import JumpSearchPractice from "./JumpSearchPractice";
 import InsertionSortPractice from "./InsertionSortPractice";
+import SelectionSortPractice from "./SelectionSortPractice";
 import LanguageSelector from "./components/LanguageSelector";
 import { binarySearchContent } from "./algorithms/binarySearchData";
 import { linearSearchContent } from "./algorithms/linearSearchData";
 import { jumpSearchContent } from "./algorithms/jumpSearchData";
 import { bubbleSortContent } from "./algorithms/bubbleSortData";
 import { insertionSortContent } from "./algorithms/insertionSortData";
+import { selectionSortContent } from "./algorithms/selectionSortData";
 import {
   LANGUAGE_LABELS,
   useLanguagePreference
@@ -21,6 +23,7 @@ const CURATED_TOPICS = {
   "Jump Search": jumpSearchContent,
   "Bubble Sort": bubbleSortContent,
   "Insertion Sort": insertionSortContent,
+  "Selection Sort": selectionSortContent,
 };
 
 function ConceptPage({ topic, onBack }) {
@@ -416,6 +419,8 @@ function ConceptPage({ topic, onBack }) {
             <JumpSearchPractice />
           ) : topic === "Insertion Sort" ? (
             <InsertionSortPractice />
+          ) : topic === "Selection Sort" ? (
+            <SelectionSortPractice />
           ) : (
             <section className="card practice-card">
               <h2>🧩 Practice: {topic}</h2>
@@ -427,7 +432,7 @@ function ConceptPage({ topic, onBack }) {
               <div className="practice-available-box">
                 <span className="available-label">Active Practice Modules:</span>
                 <p>
-                  Try <strong>Binary Search</strong>, <strong>Linear Search</strong>, <strong>Jump Search</strong>, or <strong>Insertion Sort</strong> from the sidebar to use our full interactive Practice Studio!
+                  Try <strong>Binary Search</strong>, <strong>Linear Search</strong>, <strong>Jump Search</strong>, <strong>Insertion Sort</strong>, or <strong>Selection Sort</strong> from the sidebar to use our full interactive Practice Studio!
                 </p>
               </div>
             </section>

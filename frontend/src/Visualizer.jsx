@@ -3,6 +3,7 @@ import BubbleSortVisualizer from "./BubbleSortVisualizer";
 import InsertionSortVisualizer from "./InsertionSortVisualizer";
 import JumpSearchVisualizer from "./JumpSearchVisualizer";
 import LinearSearchVisualizer from "./LinearSearchVisualizer";
+import SelectionSortVisualizer from "./SelectionSortVisualizer";
 
 function Visualizer({ topic }) {
   if (topic === "Linear Search") {
@@ -23,6 +24,10 @@ function Visualizer({ topic }) {
 
   if (topic === "Insertion Sort") {
     return <InsertionSortVisualizer />;
+  }
+
+  if (topic === "Selection Sort") {
+    return <SelectionSortVisualizer />;
   }
 
   return (

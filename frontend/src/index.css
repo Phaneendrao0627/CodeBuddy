@@ -2890,13 +2890,26 @@ code {
   color: #0f172a;
 }
 
-.metric-val.key-val {
+.metric-val.key-val,
+.metric-val.min-val {
   color: #8b5cf6;
 }
 
+.metric-val.slot-val {
+  color: #0284c7;
+}
+
 .legend-badge.key-pill,
-.pointer-pill.key-pill {
+.pointer-pill.key-pill,
+.legend-badge.min-pill,
+.pointer-pill.min-pill {
   background: #8b5cf6;
+  color: #ffffff;
+}
+
+.legend-badge.slot-pill,
+.pointer-pill.slot-pill {
+  background: #0284c7;
   color: #ffffff;
 }
 
