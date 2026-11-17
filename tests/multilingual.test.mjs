@@ -228,15 +228,15 @@ describe("Multilingual Visualizer - Trace to Code Line Synchronization", () => {
     const completeStep = { phase: "complete", finished: true };
 
     // C
-    assert.equal(mergeSortContent.implementations.c.mapStepToLine(splitStep), 3);
-    assert.equal(mergeSortContent.implementations.c.mapStepToLine(baseCaseStep), 2);
-    assert.equal(mergeSortContent.implementations.c.mapStepToLine(mergeStartStep), 8);
-    assert.equal(mergeSortContent.implementations.c.mapStepToLine(compareStep), 10);
-    assert.equal(mergeSortContent.implementations.c.mapStepToLine(copyLeftStep), 10);
-    assert.equal(mergeSortContent.implementations.c.mapStepToLine(copyRightStep), 11);
-    assert.equal(mergeSortContent.implementations.c.mapStepToLine(copyRemainingStep), 13);
-    assert.equal(mergeSortContent.implementations.c.mapStepToLine(mergeCompleteStep), 6);
-    assert.equal(mergeSortContent.implementations.c.mapStepToLine(completeStep), 7);
+    assert.equal(mergeSortContent.implementations.c.mapStepToLine(splitStep), 21);
+    assert.equal(mergeSortContent.implementations.c.mapStepToLine(baseCaseStep), 20);
+    assert.equal(mergeSortContent.implementations.c.mapStepToLine(mergeStartStep), 1);
+    assert.equal(mergeSortContent.implementations.c.mapStepToLine(compareStep), 12);
+    assert.equal(mergeSortContent.implementations.c.mapStepToLine(copyLeftStep), 12);
+    assert.equal(mergeSortContent.implementations.c.mapStepToLine(copyRightStep), 13);
+    assert.equal(mergeSortContent.implementations.c.mapStepToLine(copyRemainingStep), 15);
+    assert.equal(mergeSortContent.implementations.c.mapStepToLine(mergeCompleteStep), 24);
+    assert.equal(mergeSortContent.implementations.c.mapStepToLine(completeStep), 25);
 
     // Java
     assert.equal(mergeSortContent.implementations.java.mapStepToLine(splitStep), 3);

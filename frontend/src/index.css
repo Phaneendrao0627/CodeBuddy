@@ -3086,6 +3086,75 @@ code {
   text-decoration: line-through;
 }
 
+/* =========================================
+   HEAP SORT VISUALIZER & DUAL TREE STYLES
+========================================= */
+
+.heap-tree-card {
+  background: #0f172a;
+  border: 1px solid #334155;
+  border-radius: 12px;
+  padding: 18px 22px;
+  margin: 16px auto 0 auto;
+  width: 100%;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.25);
+}
+
+.heap-tree-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #1e293b;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.heap-tree-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+.heap-tree-legend {
+  display: flex;
+  gap: 14px;
+  font-size: 12px;
+  color: #cbd5e1;
+}
+
+.heap-tree-legend strong {
+  color: #38bdf8;
+}
+
+.heap-tree-svg {
+  display: block;
+  margin: 0 auto;
+  overflow: visible;
+}
+
+.viva-questions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.viva-question-item {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 14px 16px;
+  transition: all 0.2s ease;
+}
+
+.viva-question-item:hover {
+  border-color: #cbd5e1;
+  background: #ffffff;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .entry-animation-overlay,
   .entry-animation-card,

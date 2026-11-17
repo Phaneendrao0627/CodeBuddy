@@ -5,6 +5,10 @@ import JumpSearchVisualizer from "./JumpSearchVisualizer";
 import LinearSearchVisualizer from "./LinearSearchVisualizer";
 import SelectionSortVisualizer from "./SelectionSortVisualizer";
 import MergeSortVisualizer from "./MergeSortVisualizer";
+import QuickSortVisualizer from "./QuickSortVisualizer";
+import HeapSortVisualizer from "./HeapSortVisualizer";
+import CountingSortVisualizer from "./CountingSortVisualizer";
+import RadixSortVisualizer from "./RadixSortVisualizer";
 
 function Visualizer({ topic }) {
   if (topic === "Linear Search") {
@@ -35,6 +39,22 @@ function Visualizer({ topic }) {
     return <MergeSortVisualizer />;
   }
 
+  if (topic === "Quick Sort") {
+    return <QuickSortVisualizer />;
+  }
+
+  if (topic === "Heap Sort") {
+    return <HeapSortVisualizer />;
+  }
+
+  if (topic === "Counting Sort") {
+    return <CountingSortVisualizer />;
+  }
+
+  if (topic === "Radix Sort") {
+    return <RadixSortVisualizer />;
+  }
+
   return (
     <div className="card visualizer-placeholder-card">
       <div className="placeholder-icon">📊</div>
@@ -57,6 +77,21 @@ function Visualizer({ topic }) {
           </span>
           <span className="algo-badge active">
             🃏 Insertion Sort (Passes, Shifting &amp; Key Insertion)
+          </span>
+          <span className="algo-badge active">
+            🔀 Merge Sort (Divide &amp; Conquer Merging)
+          </span>
+          <span className="algo-badge active">
+            ⚡ Quick Sort (Lomuto Partition &amp; Pivot Placement)
+          </span>
+          <span className="algo-badge active">
+            ⛰️ Heap Sort (Max Heap &amp; Sift-Down Tree)
+          </span>
+          <span className="algo-badge active">
+            🔢 Counting Sort (Frequency Counting &amp; Stable Placement)
+          </span>
+          <span className="algo-badge active">
+            🧮 Radix Sort (LSD Digit Passes &amp; Frequency Buckets)
           </span>
           <span className="algo-badge">
             ↕️ Bubble Sort (Step Stepper)

@@ -62,15 +62,23 @@ function merge(numbers, left, mid, right):
 
 /**
  * Merges two sorted subarrays numbers[left..mid] and numbers[mid+1..right].
- * Uses temporary buffers to perform the two-pointer merge.
+ * Uses dynamically allocated buffers with error checking and clean deallocation.
+ * Returns 1 on success, 0 on memory allocation failure.
  */
-void merge(int numbers[], int left, int mid, int right) {
+int merge(int numbers[], int left, int mid, int right) {
     int n1 = mid - left + 1;
     int n2 = right - mid;
 
-    // Allocate temporary arrays for left and right subarrays
-    int leftArr[n1];
-    int rightArr[n2];
+    // Dynamically allocate temporary arrays
+    int *leftArr = (int *)malloc(n1 * sizeof(int));
+    int *rightArr = (int *)malloc(n2 * sizeof(int));
+
+    // Check for allocation failure and safely free any allocated buffer
+    if (leftArr == NULL || rightArr == NULL) {
+        free(leftArr);
+        free(rightArr);
+        return 0; // Allocation failure
+    }
 
     for (int i = 0; i < n1; i++) {
         leftArr[i] = numbers[left + i];
@@ -99,27 +107,57 @@ void merge(int numbers[], int left, int mid, int right) {
     while (j < n2) {
         numbers[k++] = rightArr[j++];
     }
+
+    // Free dynamically allocated memory to avoid memory leaks
+    free(leftArr);
+    free(rightArr);
+    return 1; // Success
 }
 
 /**
  * Recursive Merge Sort function.
+ * Checks and propagates allocation failures from both recursive calls and from merge().
+ * Returns 1 on success, 0 on failure.
  */
-void mergeSort(int numbers[], int left, int right) {
+int merge_sort(int numbers[], int left, int right) {
     if (left >= right) {
-        return; // Base case: subarray of size 0 or 1
+        return 1; // Base case: subarray of size 0 or 1
     }
 
     int mid = left + (right - left) / 2;
-    mergeSort(numbers, left, mid);      // Sort left half
-    mergeSort(numbers, mid + 1, right); // Sort right half
-    merge(numbers, left, mid, right);   // Merge sorted halves
+
+    // Check and propagate failures from both recursive calls
+    if (!merge_sort(numbers, left, mid)) {
+        return 0;
+    }
+    if (!merge_sort(numbers, mid + 1, right)) {
+        return 0;
+    }
+
+    // Check and propagate failure from merge()
+    if (!merge(numbers, left, mid, right)) {
+        return 0;
+    }
+
+    return 1; // Success
+}
+
+/**
+ * Backward-compatible camelCase wrapper.
+ */
+int mergeSort(int numbers[], int left, int right) {
+    return merge_sort(numbers, left, right);
 }
 
 int main(void) {
     int numbers[] = {38, 27, 43, 3, 9, 82, 10};
     int size = sizeof(numbers) / sizeof(numbers[0]);
 
-    mergeSort(numbers, 0, size - 1);
+    // Check return status of merge_sort
+    if (!merge_sort(numbers, 0, size - 1)) {
+        fprintf(stderr, "Error: Memory allocation failed during merge sort.\\n");
+        return 1;
+    }
 
     printf("Sorted array: ");
     for (int i = 0; i < size; i++) {
@@ -128,36 +166,49 @@ int main(void) {
     printf("\\n");
     return 0;
 }`,
-      code_explanation: "1. `mergeSort(int numbers[], int left, int right)` takes the array and bounding indices.\n2. `if (left >= right) return;` establishes the base case for single elements or empty ranges.\n3. `int mid = left + (right - left) / 2;` safely calculates the midpoint avoiding integer overflow.\n4. Recursive calls `mergeSort(numbers, left, mid)` and `mergeSort(numbers, mid + 1, right)` sort the two halves.\n5. `merge(numbers, left, mid, right)` combines the two sorted halves into temporary buffers `leftArr` and `rightArr`.\n6. The two-pointer loop compares `leftArr[i]` and `rightArr[j]`. Using `<= ` ensures duplicate keys retain their initial relative order (stability).\n7. Two subsequent `while` loops copy any remaining elements from either subarray back into the primary array.",
+      code_explanation: "1. `int merge(numbers, left, mid, right)`: Merges two sorted subarrays and returns `1` on success or `0` on allocation failure.\n2. Safe allocation: `leftArr` and `rightArr` are allocated via `malloc()`. If either allocation fails (`leftArr == NULL || rightArr == NULL`), any allocated buffer is freed immediately and `0` is returned.\n3. Two-pointer merge: Pointers `i` and `j` walk through `leftArr` and `rightArr`. Using `<=` preserves stability for duplicate keys.\n4. Residual loops: Copy any remaining elements from `leftArr` and `rightArr` into `numbers`.\n5. Safe deallocation: `free(leftArr)` and `free(rightArr)` release temporary memory before returning `1` on success.\n6. `int merge_sort(numbers, left, right)`: Recursively sorts the array range and returns `1` on success or `0` on failure.\n7. Base case: `if (left >= right) return 1;` returns immediately for 0 or 1 element.\n8. Safe midpoint: `mid = left + (right - left) / 2` calculates midpoint without integer overflow.\n9. Failure propagation: Recursive calls `if (!merge_sort(numbers, left, mid)) return 0;` and `if (!merge_sort(numbers, mid + 1, right)) return 0;` immediately bubble up any failures.\n10. Merge failure check: `if (!merge(numbers, left, mid, right)) return 0;` propagates merge failures up the call stack, returning `1` on successful sort.",
       codeLines: [
-        { line: 1, text: "void mergeSort(int numbers[], int left, int right) {" },
-        { line: 2, text: "    if (left >= right) return; // Base case: 0 or 1 element" },
-        { line: 3, text: "    int mid = left + (right - left) / 2;" },
-        { line: 4, text: "    mergeSort(numbers, left, mid);" },
-        { line: 5, text: "    mergeSort(numbers, mid + 1, right);" },
-        { line: 6, text: "    merge(numbers, left, mid, right);" },
-        { line: 7, text: "}" },
-        { line: 8, text: "void merge(int numbers[], int left, int mid, int right) {" },
-        { line: 9, text: "    while (i < n1 && j < n2) {" },
-        { line: 10, text: "        if (leftArr[i] <= rightArr[j]) numbers[k++] = leftArr[i++];" },
-        { line: 11, text: "        else numbers[k++] = rightArr[j++];" },
-        { line: 12, text: "    }" },
-        { line: 13, text: "    while (i < n1) numbers[k++] = leftArr[i++];" },
-        { line: 14, text: "    while (j < n2) numbers[k++] = rightArr[j++];" },
-        { line: 15, text: "}" }
+        { line: 1, text: "int merge(int numbers[], int left, int mid, int right) {" },
+        { line: 2, text: "    int n1 = mid - left + 1, n2 = right - mid;" },
+        { line: 3, text: "    int *leftArr = (int *)malloc(n1 * sizeof(int));" },
+        { line: 4, text: "    int *rightArr = (int *)malloc(n2 * sizeof(int));" },
+        { line: 5, text: "    if (leftArr == NULL || rightArr == NULL) {" },
+        { line: 6, text: "        free(leftArr); free(rightArr); return 0; // Allocation failure" },
+        { line: 7, text: "    }" },
+        { line: 8, text: "    for (int i = 0; i < n1; i++) leftArr[i] = numbers[left + i];" },
+        { line: 9, text: "    for (int j = 0; j < n2; j++) rightArr[j] = numbers[mid + 1 + j];" },
+        { line: 10, text: "    int i = 0, j = 0, k = left;" },
+        { line: 11, text: "    while (i < n1 && j < n2) {" },
+        { line: 12, text: "        if (leftArr[i] <= rightArr[j]) numbers[k++] = leftArr[i++];" },
+        { line: 13, text: "        else numbers[k++] = rightArr[j++];" },
+        { line: 14, text: "    }" },
+        { line: 15, text: "    while (i < n1) numbers[k++] = leftArr[i++];" },
+        { line: 16, text: "    while (j < n2) numbers[k++] = rightArr[j++];" },
+        { line: 17, text: "    free(leftArr); free(rightArr); return 1; // Free & success" },
+        { line: 18, text: "}" },
+        { line: 19, text: "int merge_sort(int numbers[], int left, int right) {" },
+        { line: 20, text: "    if (left >= right) return 1; // Base case: 0 or 1 element" },
+        { line: 21, text: "    int mid = left + (right - left) / 2;" },
+        { line: 22, text: "    if (!merge_sort(numbers, left, mid)) return 0;" },
+        { line: 23, text: "    if (!merge_sort(numbers, mid + 1, right)) return 0;" },
+        { line: 24, text: "    if (!merge(numbers, left, mid, right)) return 0;" },
+        { line: 25, text: "    return 1; // Sorted successfully" },
+        { line: 26, text: "}" }
       ],
       mapStepToLine(step) {
         if (!step) return null;
-        if (step.finished || step.phase === "complete") return 7;
-        if (step.phase === "split") return 3;
-        if (step.phase === "base_case") return 2;
-        if (step.phase === "merge_start") return 8;
-        if (step.phase === "compare") return 10;
-        if (step.phase === "copy_left") return 10;
-        if (step.phase === "copy_right") return 11;
-        if (step.phase === "copy_remaining") return 13;
-        if (step.phase === "merge_complete") return 6;
-        return 1;
+        if (step.finished || step.phase === "complete") return 25;
+        if (step.phase === "split") return 21;
+        if (step.phase === "base_case") return 20;
+        if (step.phase === "merge_start") return 1;
+        if (step.phase === "compare") return 12;
+        if (step.phase === "copy_left") return 12;
+        if (step.phase === "copy_right") return 13;
+        if (step.phase === "copy_remaining") {
+          return step.message && step.message.includes("right") ? 16 : 15;
+        }
+        if (step.phase === "merge_complete") return 24;
+        return 19;
       }
     },
 

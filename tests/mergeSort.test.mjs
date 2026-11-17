@@ -153,17 +153,51 @@ describe("Merge Sort - Multilingual Schema & Line Synchronization", () => {
     }
   });
 
+  it("verifies safe dynamic memory management in C implementation (malloc, NULL check, free, no VLAs)", () => {
+    const cCode = mergeSortContent.implementations.c.code;
+    assert.match(cCode, /#include <stdlib\.h>/);
+    assert.match(cCode, /malloc\(n1 \* sizeof\(int\)\)/);
+    assert.match(cCode, /malloc\(n2 \* sizeof\(int\)\)/);
+    assert.match(cCode, /if \(leftArr == NULL \|\| rightArr == NULL\)/);
+    assert.match(cCode, /free\(leftArr\)/);
+    assert.match(cCode, /free\(rightArr\)/);
+    // Ensure VLAs are not used
+    assert.doesNotMatch(cCode, /int leftArr\[n1\]/);
+    assert.doesNotMatch(cCode, /int rightArr\[n2\]/);
+  });
+
+  it("verifies C allocation failure propagation, status returns, and buffer cleanup on all paths", () => {
+    const cCode = mergeSortContent.implementations.c.code;
+    // merge() returns integer status (1 on success, 0 on failure)
+    assert.match(cCode, /int merge\(int numbers\[\], int left, int mid, int right\)/);
+    // merge_sort() returns integer status
+    assert.match(cCode, /int merge_sort\(int numbers\[\], int left, int right\)/);
+    // Recursive calls propagate failure
+    assert.match(cCode, /if \(!merge_sort\(numbers, left, mid\)\)\s*\{\s*return 0;\s*\}/);
+    assert.match(cCode, /if \(!merge_sort\(numbers, mid \+ 1, right\)\)\s*\{\s*return 0;\s*\}/);
+    // merge() call propagates failure
+    assert.match(cCode, /if \(!merge\(numbers, left, mid, right\)\)\s*\{\s*return 0;\s*\}/);
+    // Returns 1 on success
+    assert.match(cCode, /return 1;/);
+    // Buffers freed on allocation error path
+    assert.match(cCode, /if \(leftArr == NULL \|\| rightArr == NULL\) \{\s*free\(leftArr\);\s*free\(rightArr\);\s*return 0;/);
+    // Buffers freed on normal completion path before returning 1
+    assert.match(cCode, /free\(leftArr\);\s*free\(rightArr\);\s*return 1;/);
+    // Preserves stability using <=
+    assert.match(cCode, /if \(leftArr\[i\] <= rightArr\[j\]\)/);
+  });
+
   it("synchronizes all trace phases with C, Java, and Python code lines", () => {
     const testPhases = [
-      { step: { phase: "split" }, expected: { c: 3, java: 3, python: 3 } },
-      { step: { phase: "base_case" }, expected: { c: 2, java: 2, python: 2 } },
-      { step: { phase: "merge_start" }, expected: { c: 8, java: 8, python: 7 } },
-      { step: { phase: "compare" }, expected: { c: 10, java: 10, python: 9 } },
-      { step: { phase: "copy_left" }, expected: { c: 10, java: 10, python: 9 } },
-      { step: { phase: "copy_right" }, expected: { c: 11, java: 11, python: 10 } },
-      { step: { phase: "copy_remaining" }, expected: { c: 13, java: 13, python: 12 } },
-      { step: { phase: "merge_complete" }, expected: { c: 6, java: 6, python: 6 } },
-      { step: { phase: "complete", finished: true }, expected: { c: 7, java: 7, python: 6 } }
+      { step: { phase: "split" }, expected: { c: 21, java: 3, python: 3 } },
+      { step: { phase: "base_case" }, expected: { c: 20, java: 2, python: 2 } },
+      { step: { phase: "merge_start" }, expected: { c: 1, java: 8, python: 7 } },
+      { step: { phase: "compare" }, expected: { c: 12, java: 10, python: 9 } },
+      { step: { phase: "copy_left" }, expected: { c: 12, java: 10, python: 9 } },
+      { step: { phase: "copy_right" }, expected: { c: 13, java: 11, python: 10 } },
+      { step: { phase: "copy_remaining" }, expected: { c: 15, java: 13, python: 12 } },
+      { step: { phase: "merge_complete" }, expected: { c: 24, java: 6, python: 6 } },
+      { step: { phase: "complete", finished: true }, expected: { c: 25, java: 7, python: 6 } }
     ];
 
     for (const { step, expected } of testPhases) {
@@ -183,5 +217,25 @@ describe("Merge Sort - Multilingual Schema & Line Synchronization", () => {
         `Python line mismatch for ${step.phase}`
       );
     }
+  });
+
+  it("verifies C codeLines order and explicit error propagation representation", () => {
+    const cImpl = mergeSortContent.implementations.c;
+    // merge() defined first
+    assert.match(cImpl.codeLines[0].text, /int merge\(int numbers\[\], int left, int mid, int right\)/);
+    // Dynamic allocations in codeLines
+    assert.ok(cImpl.codeLines.some((l) => l.text.includes("malloc(n1 * sizeof(int))")));
+    assert.ok(cImpl.codeLines.some((l) => l.text.includes("malloc(n2 * sizeof(int))")));
+    // Allocation check and free on failure
+    assert.ok(cImpl.codeLines.some((l) => l.text.includes("leftArr == NULL || rightArr == NULL")));
+    assert.ok(cImpl.codeLines.some((l) => l.text.includes("free(leftArr); free(rightArr); return 0;")));
+    // Success free
+    assert.ok(cImpl.codeLines.some((l) => l.text.includes("free(leftArr); free(rightArr); return 1;")));
+    // merge_sort() defined second
+    const mergeSortLine = cImpl.codeLines.find((l) => l.text.includes("int merge_sort("));
+    assert.ok(mergeSortLine && mergeSortLine.line > 10);
+    // Explicit propagation, not return merge(...)
+    assert.ok(cImpl.codeLines.some((l) => l.text.includes("if (!merge(numbers, left, mid, right)) return 0;")));
+    assert.ok(!cImpl.codeLines.some((l) => l.text.includes("return merge(")));
   });
 });

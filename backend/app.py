@@ -1,3 +1,9 @@
+import os
+import sys
+
+# Ensure backend directory is in sys.path for sibling imports
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from ai_service import get_ai_response
@@ -135,5 +141,5 @@ if __name__ == "__main__":
     app.run(
         debug=True,
         host="127.0.0.1",
-        port=5000
+        port=5001
     )

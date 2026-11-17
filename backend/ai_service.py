@@ -122,6 +122,20 @@ Return ONLY valid JSON.
         )
 
 
+    except requests.exceptions.HTTPError as e:
+
+        error_detail = ""
+        if e.response is not None:
+            try:
+                error_detail = e.response.json().get("error", e.response.text)
+            except Exception:
+                error_detail = e.response.text
+
+        if error_detail:
+            raise Exception(f"Ollama error ({e.response.status_code}): {error_detail}")
+        raise Exception(f"Ollama HTTP error: {str(e)}")
+
+
     except requests.exceptions.RequestException as e:
 
         raise Exception(

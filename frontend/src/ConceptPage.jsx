@@ -6,6 +6,10 @@ import JumpSearchPractice from "./JumpSearchPractice";
 import InsertionSortPractice from "./InsertionSortPractice";
 import SelectionSortPractice from "./SelectionSortPractice";
 import MergeSortPractice from "./MergeSortPractice";
+import QuickSortPractice from "./QuickSortPractice";
+import HeapSortPractice from "./HeapSortPractice";
+import CountingSortPractice from "./CountingSortPractice";
+import RadixSortPractice from "./RadixSortPractice";
 import LanguageSelector from "./components/LanguageSelector";
 import { binarySearchContent } from "./algorithms/binarySearchData";
 import { linearSearchContent } from "./algorithms/linearSearchData";
@@ -14,6 +18,10 @@ import { bubbleSortContent } from "./algorithms/bubbleSortData";
 import { insertionSortContent } from "./algorithms/insertionSortData";
 import { selectionSortContent } from "./algorithms/selectionSortData";
 import { mergeSortContent } from "./algorithms/mergeSortData";
+import { quickSortContent } from "./algorithms/quickSortData";
+import { heapSortContent } from "./algorithms/heapSortData";
+import { countingSortContent } from "./algorithms/countingSortData";
+import { radixSortContent } from "./algorithms/radixSortData";
 import {
   LANGUAGE_LABELS,
   useLanguagePreference
@@ -27,6 +35,10 @@ const CURATED_TOPICS = {
   "Insertion Sort": insertionSortContent,
   "Selection Sort": selectionSortContent,
   "Merge Sort": mergeSortContent,
+  "Quick Sort": quickSortContent,
+  "Heap Sort": heapSortContent,
+  "Counting Sort": countingSortContent,
+  "Radix Sort": radixSortContent,
 };
 
 function ConceptPage({ topic, onBack }) {
@@ -245,6 +257,17 @@ function ConceptPage({ topic, onBack }) {
                 </section>
               )}
 
+              {Array.isArray(data.core_concepts) && (
+                <section className="card">
+                  <h2>🎯 Core Concepts</h2>
+                  <ul>
+                    {data.core_concepts.map((concept, index) => (
+                      <li key={index}>{concept}</li>
+                    ))}
+                  </ul>
+                </section>
+              )}
+
               {Array.isArray(data.algorithm) && (
                 <section className="card">
                   <h2>⚙️ Algorithm</h2>
@@ -363,6 +386,17 @@ function ConceptPage({ topic, onBack }) {
                 </section>
               )}
 
+              {Array.isArray(data.edge_cases) && (
+                <section className="card">
+                  <h2>🧩 Edge Cases</h2>
+                  <ul>
+                    {data.edge_cases.map((edge, index) => (
+                      <li key={index}>{edge}</li>
+                    ))}
+                  </ul>
+                </section>
+              )}
+
               {data.practice && (
                 <section className="card practice-card">
 
@@ -377,6 +411,20 @@ function ConceptPage({ topic, onBack }) {
                     Start Practice →
                   </button>
 
+                </section>
+              )}
+
+              {Array.isArray(data.viva_questions) && (
+                <section className="card">
+                  <h2>🎓 Viva &amp; Interview Questions</h2>
+                  <div className="viva-questions-list">
+                    {data.viva_questions.map((vq, index) => (
+                      <div key={index} className="viva-question-item" style={{ marginBottom: "16px" }}>
+                        <p style={{ fontWeight: 600, color: "#1e293b" }}>Q{index + 1}: {vq.question}</p>
+                        <p style={{ marginTop: "4px", color: "#475569" }}>{vq.answer}</p>
+                      </div>
+                    ))}
+                  </div>
                 </section>
               )}
 
@@ -426,6 +474,14 @@ function ConceptPage({ topic, onBack }) {
             <SelectionSortPractice />
           ) : topic === "Merge Sort" ? (
             <MergeSortPractice />
+          ) : topic === "Quick Sort" ? (
+            <QuickSortPractice />
+          ) : topic === "Heap Sort" ? (
+            <HeapSortPractice />
+          ) : topic === "Counting Sort" ? (
+            <CountingSortPractice />
+          ) : topic === "Radix Sort" ? (
+            <RadixSortPractice />
           ) : (
             <section className="card practice-card">
               <h2>🧩 Practice: {topic}</h2>
@@ -437,7 +493,7 @@ function ConceptPage({ topic, onBack }) {
               <div className="practice-available-box">
                 <span className="available-label">Active Practice Modules:</span>
                 <p>
-                  Try <strong>Binary Search</strong>, <strong>Linear Search</strong>, <strong>Jump Search</strong>, <strong>Insertion Sort</strong>, <strong>Selection Sort</strong>, or <strong>Merge Sort</strong> from the sidebar to use our full interactive Practice Studio!
+                  Try <strong>Binary Search</strong>, <strong>Linear Search</strong>, <strong>Jump Search</strong>, <strong>Insertion Sort</strong>, <strong>Selection Sort</strong>, <strong>Merge Sort</strong>, <strong>Quick Sort</strong>, <strong>Heap Sort</strong>, <strong>Counting Sort</strong>, or <strong>Radix Sort</strong> from the sidebar to use our full interactive Practice Studio!
                 </p>
               </div>
             </section>
